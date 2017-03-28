@@ -88,7 +88,8 @@ namespace PnIotPoc.Device.SimulatorCore.Transport.Factory
 
             // sample code to trace the raw JSON that is being sent
             string rawJson = JsonConvert.SerializeObject(eventData);
-            Trace.TraceInformation("Sending message: " + rawJson);
+           // Trace.TraceInformation("Sending message: " + rawJson);
+            _logger.LogInfo("Sending message: " + rawJson);
 
             byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(eventData));
 

@@ -203,7 +203,6 @@
     <Compile Include="SimulatorCore\Telemetry\ITelemetry.cs" />
     <Compile Include="SimulatorCore\Logging\ILogger.cs" />
     <Compile Include="SimulatorCore\Logging\TraceLogger.cs" />
-    <Compile Include="SimulatorCore\Telemetry\StartupTelemetry.cs" />
     <Compile Include="SimulatorCore\Transport\DeserializableCommand.cs" />
     <Compile Include="SimulatorCore\Transport\EmptyTransport.cs" />
     <Compile Include="SimulatorCore\Transport\Factory\IoTHubTransport.cs" />

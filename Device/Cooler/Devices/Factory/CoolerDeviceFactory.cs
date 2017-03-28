@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PnIotPoc.Device.SimulatorCore.Devices;
+﻿using PnIotPoc.Device.SimulatorCore.Devices;
 using PnIotPoc.Device.SimulatorCore.Devices.Factory;
 using PnIotPoc.Device.SimulatorCore.Logging;
 using PnIotPoc.Device.SimulatorCore.Telemetry.Factory;
