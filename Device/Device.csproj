@@ -199,6 +199,7 @@
     <Compile Include="SimulatorCore\Devices\IDevice.cs" />
     <Compile Include="SimulatorCore\Repository\AppConfigRepository.cs" />
     <Compile Include="SimulatorCore\Telemetry\ConcreteTelemetry.cs" />
+    <Compile Include="SimulatorCore\Telemetry\Factory\GenericConcreteTelemetryFactory.cs" />
     <Compile Include="SimulatorCore\Telemetry\Factory\ITelemetryFactory.cs" />
     <Compile Include="SimulatorCore\Telemetry\ITelemetry.cs" />
     <Compile Include="SimulatorCore\Logging\ILogger.cs" />
