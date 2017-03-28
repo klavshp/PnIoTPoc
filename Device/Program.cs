@@ -74,7 +74,12 @@ namespace PnIotPoc.Device
             var logger = new TraceLogger();
             var configProvider = new ConfigurationProvider();
             var tableStorageClientFactory = new AzureTableStorageClientFactory();
+
             var telemetryFactory = new CoolerTelemetryFactory(logger);
+            // var telemetryFactory = new RfidReaderTelemetryFactory(logger);
+
+            IDeviceFactory deviceFactory = new CoolerDeviceFactory();
+            // IDeviceFactory deviceFactory = new RfidReaderDeviceFactory();
 
             var transportFactory = new IotHubTransportFactory(logger, configProvider);
 
@@ -89,10 +94,6 @@ namespace PnIotPoc.Device
             {
                 deviceStorage = new VirtualDeviceTableStorage(configProvider, tableStorageClientFactory);
             }
-
-            // IDeviceFactory deviceFactory = new CoolerDeviceFactory();
-            IDeviceFactory deviceFactory = new RfidReaderDeviceFactory();
-
 
             // Start Simulator
             Trace.TraceInformation("Starting Simulator");

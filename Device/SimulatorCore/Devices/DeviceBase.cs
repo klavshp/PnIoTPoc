@@ -118,8 +118,8 @@ namespace PnIotPoc.Device.SimulatorCore.Devices
             device.DeviceProperties = this.DeviceProperties;
             device.Commands = this.Commands ?? new List<Command>();
             device.Telemetry = this.Telemetry ?? new List<WebApi.Common.Models.Telemetry>();
-            device.Version = SampleDeviceFactory.VERSION_1_0;
-            device.ObjectType = SampleDeviceFactory.OBJECT_TYPE_DEVICE_INFO;
+            device.Version = SampleDeviceFactory.Version10;
+            device.ObjectType = SampleDeviceFactory.ObjectTypeDeviceInfo;
 
             // Remove the system properties from a device, to better emulate the behavior of real devices when sending device info messages.
             device.SystemProperties = null;

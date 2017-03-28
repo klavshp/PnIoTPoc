@@ -12,16 +12,11 @@ namespace PnIotPoc.WebApi.Common.Factory
 {
     public static class SampleDeviceFactory
     {
-        public const string OBJECT_TYPE_DEVICE_INFO = "DeviceInfo";
-
-        public const string VERSION_1_0 = "1.0";
-
-        private const int MAX_COMMANDS_SUPPORTED = 6;
-
-        private const bool IS_SIMULATED_DEVICE = true;
-
+        public const string ObjectTypeDeviceInfo = "DeviceInfo";
+        public const string Version10 = "1.0";
+        private const int MaxCommandsSupported = 6;
+        private const bool IsSimulatedDevice = true;
         private static readonly Random Rand = new Random();
-
         private static readonly List<string> DefaultDeviceNames = new List<string>{
             "SampleDevice001",
             "SampleDevice002",
@@ -39,26 +34,15 @@ namespace PnIotPoc.WebApi.Common.Factory
                 Latitude = latitude;
                 Longitude = longitude;
             }
-
         }
 
-        private static List<Location> _possibleDeviceLocations = new List<Location>{
+        private static readonly List<Location> PossibleDeviceLocations = new List<Location>
+        {
             new Location(55.7359677, 12.388040600000068),           // Lautruphøj 10
             new Location(55.73669599999999, 12.388249999999971),    // Lautruphøj 12
             new Location(55.738291, 12.39358059999995),             // Lautrupparken 42
             new Location(55.7352032, 12.390869399999929),           // Lautrupparken 46
-            new Location(55.735744, 12.382654000000002),            // Borupgaard gymnasium
-            //new Location(47.644328, -122.137036),  // 15255 NE 40th St Redmond, WA 98008
-            //new Location(47.621573, -122.338101),  // 320 Westlake Ave N, Seattle, WA 98109
-            //new Location(47.642357, -122.137152), // 15010 NE 36th St, Redmond, WA 98052
-            //new Location(47.614981, -122.195781), //500 108th Ave NE, Bellevue, WA 98004 
-            //new Location(47.642528, -122.130565), //3460 157th Ave NE, Redmond, WA 98052
-            //new Location(47.617187, -122.191685), //11155 NE 8th St, Bellevue, WA 98004
-            //new Location(47.677292, -122.093030), //18500 NE Union Hill Rd, Redmond, WA 98052
-            //new Location(47.642528, -122.130565), //3600 157th Ave NE, Redmond, WA 98052
-            //new Location(47.642876, -122.125492), //16070 NE 36th Way Bldg 33, Redmond, WA 98052
-            //new Location(47.637376, -122.140445), //14999 NE 31st Way, Redmond, WA 98052
-            //new Location(47.636121, -122.130254) //3009 157th Pl NE, Redmond, WA 98052
+            new Location(55.735744, 12.382654000000002)             // Borupgaard gymnasium
         };
 
         public static DeviceModel GetSampleSimulatedDevice(string deviceId, string key)
@@ -66,9 +50,9 @@ namespace PnIotPoc.WebApi.Common.Factory
             DeviceModel device = DeviceCreatorHelper.BuildDeviceStructure(deviceId, true, null);
 
             AssignDeviceProperties(device);
-            device.ObjectType = OBJECT_TYPE_DEVICE_INFO;
-            device.Version = VERSION_1_0;
-            device.IsSimulatedDevice = IS_SIMULATED_DEVICE;
+            device.ObjectType = ObjectTypeDeviceInfo;
+            device.Version = Version10;
+            device.IsSimulatedDevice = IsSimulatedDevice;
 
             AssignTelemetry(device);
             AssignCommands(device);
@@ -81,7 +65,7 @@ namespace PnIotPoc.WebApi.Common.Factory
             var deviceId = string.Format(
                     CultureInfo.InvariantCulture,
                     "00000-DEV-{0}C-{1}LK-{2}D-{3}",
-                    MAX_COMMANDS_SUPPORTED,
+                    MaxCommandsSupported,
                     randomNumber.Next(99999),
                     randomNumber.Next(99999),
                     randomNumber.Next(99999));
@@ -98,7 +82,7 @@ namespace PnIotPoc.WebApi.Common.Factory
 
         private static void AssignDeviceProperties(DeviceModel device)
         {
-            int randomId = Rand.Next(0, _possibleDeviceLocations.Count - 1);
+            int randomId = Rand.Next(0, PossibleDeviceLocations.Count - 1);
             if (device?.DeviceProperties == null)
             {
                 throw new DeviceRequiredPropertyNotFoundException("Required DeviceProperties not found");
@@ -114,14 +98,14 @@ namespace PnIotPoc.WebApi.Common.Factory
             device.DeviceProperties.InstalledRAM = randomId + " MB";
 
             // Choose a location among the 16 above and set Lat and Long for device properties
-            device.DeviceProperties.Latitude = _possibleDeviceLocations[randomId].Latitude;
-            device.DeviceProperties.Longitude = _possibleDeviceLocations[randomId].Longitude;
+            device.DeviceProperties.Latitude = PossibleDeviceLocations[randomId].Latitude;
+            device.DeviceProperties.Longitude = PossibleDeviceLocations[randomId].Longitude;
         }
 
         private static void AssignTelemetry(DeviceModel device)
         {
             device.Telemetry.Add(new Telemetry("Temperature", "Temperature", "double"));
-            device.Telemetry.Add(new Telemetry("Humidity", "Humidity", "double"));
+//            device.Telemetry.Add(new Telemetry("Humidity", "Humidity", "double"));
         }
 
         private static void AssignCommands(DeviceModel device)

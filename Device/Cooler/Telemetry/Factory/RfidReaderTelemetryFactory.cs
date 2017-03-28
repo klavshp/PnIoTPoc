@@ -1,9 +1,8 @@
-﻿using PnIotPoc.Device.Cooler.Telemetry;
-using PnIotPoc.Device.SimulatorCore.Devices;
+﻿using PnIotPoc.Device.SimulatorCore.Devices;
 using PnIotPoc.Device.SimulatorCore.Logging;
 using PnIotPoc.Device.SimulatorCore.Telemetry.Factory;
 
-namespace PnIotPoc.Device.RfidReader.Telemetry.Factory
+namespace PnIotPoc.Device.Cooler.Telemetry.Factory
 {
     public class RfidReaderTelemetryFactory : ITelemetryFactory
     {
@@ -19,7 +18,7 @@ namespace PnIotPoc.Device.RfidReader.Telemetry.Factory
             var startupTelemetry = new StartupTelemetry(_logger, device);
             device.TelemetryEvents.Add(startupTelemetry);
 
-            var monitorTelemetry = new RemoteMonitorTelemetry(_logger, device.DeviceID);
+            var monitorTelemetry = new RfidReaderTelemetry(_logger, device.DeviceID);
             device.TelemetryEvents.Add(monitorTelemetry);
 
             return monitorTelemetry;
