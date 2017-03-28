@@ -90,7 +90,9 @@ namespace PnIotPoc.Device
                 deviceStorage = new VirtualDeviceTableStorage(configProvider, tableStorageClientFactory);
             }
 
-            IDeviceFactory deviceFactory = new CoolerDeviceFactory();
+            // IDeviceFactory deviceFactory = new CoolerDeviceFactory();
+            IDeviceFactory deviceFactory = new RfidReaderDeviceFactory();
+
 
             // Start Simulator
             Trace.TraceInformation("Starting Simulator");

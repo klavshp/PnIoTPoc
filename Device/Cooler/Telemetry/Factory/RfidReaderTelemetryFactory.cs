@@ -1,14 +1,15 @@
-﻿using PnIotPoc.Device.SimulatorCore.Devices;
+﻿using PnIotPoc.Device.Cooler.Telemetry;
+using PnIotPoc.Device.SimulatorCore.Devices;
 using PnIotPoc.Device.SimulatorCore.Logging;
 using PnIotPoc.Device.SimulatorCore.Telemetry.Factory;
 
-namespace PnIotPoc.Device.Cooler.Telemetry.Factory
+namespace PnIotPoc.Device.RfidReader.Telemetry.Factory
 {
-    public class CoolerTelemetryFactory : ITelemetryFactory
+    public class RfidReaderTelemetryFactory : ITelemetryFactory
     {
         private readonly ILogger _logger;
 
-        public CoolerTelemetryFactory(ILogger logger)
+        public RfidReaderTelemetryFactory(ILogger logger)
         {
             _logger = logger;
         }

@@ -16,9 +16,9 @@ namespace PnIotPoc.Device.Cooler.Telemetry
         private const int REPORT_FREQUENCY_IN_SECONDS = 5;
         private const int PEAK_FREQUENCY_IN_SECONDS = 90;
 
-        private SampleDataGenerator _temperatureGenerator;
-        private SampleDataGenerator _humidityGenerator;
-        private SampleDataGenerator _externalTemperatureGenerator;
+        private readonly SampleDataGenerator _temperatureGenerator;
+        private readonly SampleDataGenerator _humidityGenerator;
+        private readonly SampleDataGenerator _externalTemperatureGenerator;
 
         public bool ActivateExternalTemperature { get; set; }
 
@@ -42,7 +42,6 @@ namespace PnIotPoc.Device.Cooler.Telemetry
         public async Task SendEventsAsync(CancellationToken token, Func<object, Task> sendMessageAsync)
         {
             var monitorData = new RemoteMonitorTelemetryData();
-            string messageBody;
             while (!token.IsCancellationRequested)
             {
                 if (TelemetryActive)
@@ -50,8 +49,8 @@ namespace PnIotPoc.Device.Cooler.Telemetry
                     monitorData.DeviceId = _deviceId;
                     monitorData.Temperature = _temperatureGenerator.GetNextValue();
                     monitorData.Humidity = _humidityGenerator.GetNextValue();
-                    messageBody = "Temperature: " + Math.Round(monitorData.Temperature, 2)
-                        + " Humidity: " + Math.Round(monitorData.Humidity, 2);
+                    var messageBody = "Temperature: " + Math.Round(monitorData.Temperature, 2)
+                                         + " Humidity: " + Math.Round(monitorData.Humidity, 2);
 
                     if (ActivateExternalTemperature)
                     {
@@ -63,7 +62,7 @@ namespace PnIotPoc.Device.Cooler.Telemetry
                         monitorData.ExternalTemperature = null;
                     }
 
-                    //_logger.LogInfo("Sending " + messageBody + " for Device: " + _deviceId);
+                    _logger.LogInfo("Sending " + messageBody + " for Device: " + _deviceId);
 
                     await sendMessageAsync(monitorData);
                 }

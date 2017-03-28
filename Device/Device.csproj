@@ -178,9 +178,13 @@
     <Compile Include="Cooler\CommandProcessors\StopCommandProcessor.cs" />
     <Compile Include="Cooler\Devices\CoolerDevice.cs" />
     <Compile Include="Cooler\Devices\Factory\CoolerDeviceFactory.cs" />
+    <Compile Include="Cooler\Devices\Factory\RfidReaderDeviceFactory.cs" />
+    <Compile Include="Cooler\Devices\RfidReaderDevice.cs" />
     <Compile Include="Cooler\Telemetry\Data\RemoteMonitorTelemetryData.cs" />
+    <Compile Include="Cooler\Telemetry\Data\RfidReaderTelemetryData.cs" />
     <Compile Include="Cooler\Telemetry\Factory\CoolerTelemetryFactory.cs" />
     <Compile Include="Cooler\Telemetry\RemoteMonitorTelemetry.cs" />
+    <Compile Include="Cooler\Telemetry\RfidReaderTelemetry.cs" />
     <Compile Include="Cooler\Telemetry\StartupTelemetry.cs" />
     <Compile Include="DataInitialization\DataInitializer.cs" />
     <Compile Include="DataInitialization\IDataInitializer.cs" />
@@ -192,6 +196,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Cooler\Telemetry\Factory\RfidReaderTelemetryFactory.cs" />
     <Compile Include="SimulatorCore\CommandProcessors\CommandProcessor.cs" />
     <Compile Include="SimulatorCore\CommandProcessors\PingDeviceProcessor.cs" />
     <Compile Include="SimulatorCore\Devices\DeviceBase.cs" />
@@ -229,6 +234,7 @@
   <ItemGroup>
     <Compile Include="Cooler\CommandProcessors\ChangeDeviceStateCommandProcessor.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

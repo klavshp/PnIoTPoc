@@ -15,7 +15,6 @@ namespace PnIotPoc.Device.Cooler.Devices
     /// </summary>
     public class CoolerDevice : DeviceBase
     {
-
         public CoolerDevice(ILogger logger, ITransportFactory transportFactory,
             ITelemetryFactory telemetryFactory, IConfigurationProvider configurationProvider)
             : base(logger, transportFactory, telemetryFactory, configurationProvider)

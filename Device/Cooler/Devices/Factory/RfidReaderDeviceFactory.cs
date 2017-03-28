@@ -8,11 +8,11 @@ using PnIotPoc.WebApi.Common.Models;
 
 namespace PnIotPoc.Device.Cooler.Devices.Factory
 {
-    public class CoolerDeviceFactory : IDeviceFactory
+    public class RfidReaderDeviceFactory : IDeviceFactory
     {
         public IDevice CreateDevice(ILogger logger, ITransportFactory transportFactory, ITelemetryFactory telemetryFactory, IConfigurationProvider configurationProvider, InitialDeviceConfig config)
         {
-            var device = new CoolerDevice(logger, transportFactory, telemetryFactory, configurationProvider);
+            var device = new RfidReaderDevice(logger, transportFactory, telemetryFactory, configurationProvider);
             device.Init(config);
             return device;
         }
