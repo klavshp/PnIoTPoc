@@ -75,12 +75,7 @@ namespace PnIotPoc.Device.SimulatorCore.Devices
 
         public void Init(InitialDeviceConfig config)
         {
-            Init(config, "");
-        }
-
-        public void Init(InitialDeviceConfig config, string deviceType)
-        {
-            InitDeviceInfo(config, deviceType);
+            InitDeviceInfo(config);
 
             Transport = TransportFactory.CreateTransport(this);
             _telemetryController = TelemetryFactory.PopulateDeviceWithTelemetryEvents(this);
@@ -90,7 +85,7 @@ namespace PnIotPoc.Device.SimulatorCore.Devices
 
         protected virtual void InitDeviceInfo(InitialDeviceConfig config, string deviceType = null)
         {
-            var initialDevice = SampleDeviceFactory.GetSampleSimulatedDevice(config.DeviceId, config.Key, deviceType);
+            var initialDevice = SampleDeviceFactory.GetSampleSimulatedDevice(config.DeviceId, config.Key);
             DeviceProperties = initialDevice.DeviceProperties;
             Commands = initialDevice.Commands ?? new List<Command>();
             Telemetry = initialDevice.Telemetry ?? new List<WebApi.Common.Models.Telemetry>();
@@ -108,7 +103,7 @@ namespace PnIotPoc.Device.SimulatorCore.Devices
             RootCommandProcessor = pingDeviceProcessor;
         }
 
-        public async virtual Task SendDeviceInfo()
+        public virtual async Task SendDeviceInfo()
         {
             Logger.LogInfo("Sending Device Info for device {0}...", DeviceID);
             await Transport.SendEventAsync(GetDeviceInfo());

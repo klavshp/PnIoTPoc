@@ -19,9 +19,9 @@ namespace PnIotPoc.WebApi.Controllers
     [RoutePrefix("api/v1/telemetry")]
     public class TelemetryApiController : WebApiControllerBase
     {
-        private const double MAX_DEVICE_SUMMARY_AGE_MINUTES = 10.0;
-        private const int DISPLAYED_HISTORY_ITEMS = 18;
-        private const int MAX_DEVICES_TO_DISPLAY_ON_DASHBOARD = 200;
+        private const double MaxDeviceSummaryAgeMinutes = 10.0;
+        private const int DisplayedHistoryItems = 18;
+        private const int MaxDevicesToDisplayOnDashboard = 200;
 
         private static readonly TimeSpan CautionAlertMaxDelta = TimeSpan.FromMinutes(91.0);
         private static readonly TimeSpan CriticalAlertMaxDelta = TimeSpan.FromMinutes(11.0);
@@ -73,8 +73,6 @@ namespace PnIotPoc.WebApi.Controllers
             _configProvider = configProvider;
         }
 
-
-
         [HttpGet]
         [Route("list")]
 //        [WebApiRequirePermission(Permission.ViewTelemetry)]
@@ -83,7 +81,7 @@ namespace PnIotPoc.WebApi.Controllers
         {
             // TESTING
             var deviceId = "SampleDevice001_972";
-            var minTime = DateTime.Now.AddDays(-7);
+            var minTime = DateTime.Now.AddHours(-1);
 
             Func<Task<DeviceTelemetryModel[]>> getTelemetry =
                 async () =>

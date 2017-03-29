@@ -5,15 +5,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using PnIotPoc.WebApi.Common.Configurations;
 using PnIotPoc.WebApi.Common.Helpers;
 using PnIotPoc.WebApi.Infrastructure.Models;
 using PnIotPoc.WebApi.Models;
-
-// using WebApi.Common.Configurations;
-// using WebApi.Infrastructure.Models;
-
 
 namespace PnIotPoc.WebApi.Infrastructure.Repository
 {
@@ -38,14 +33,10 @@ namespace PnIotPoc.WebApi.Infrastructure.Repository
                 throw new ArgumentNullException(nameof(configProvider));
             }
 
-            string telemetryContainerName = configProvider.GetConfigurationSettingValue("TelemetryStoreContainerName");
-
+            var telemetryContainerName = configProvider.GetConfigurationSettingValue("TelemetryStoreContainerName");
             _telemetryDataPrefix = configProvider.GetConfigurationSettingValue("TelemetryDataPrefix");
-
-            string telemetryStoreConnectionString = configProvider.GetConfigurationSettingValue("device.StorageConnectionString");
-
+            var telemetryStoreConnectionString = configProvider.GetConfigurationSettingValue("device.StorageConnectionString");
             _telemetrySummaryPrefix = configProvider.GetConfigurationSettingValue("TelemetrySummaryPrefix");
-
             _blobStorageManager = blobStorageClientFactory.CreateClient(telemetryStoreConnectionString, telemetryContainerName);
         }
 
@@ -67,11 +58,11 @@ namespace PnIotPoc.WebApi.Infrastructure.Repository
         public async Task<IEnumerable<DeviceTelemetryModel>> LoadLatestDeviceTelemetryAsync(string deviceId, IList<DeviceTelemetryFieldModel> telemetryFields, DateTime minTime)
         {
             IEnumerable<DeviceTelemetryModel> result = new DeviceTelemetryModel[0];
-            IEnumerable<DeviceTelemetryModel> blobModels;
 
             var telemetryBlobReader = await _blobStorageManager.GetReader(_telemetryDataPrefix, minTime);
             foreach (var telemetryStream in telemetryBlobReader)
             {
+                IEnumerable<DeviceTelemetryModel> blobModels;
                 try
                 {
                     blobModels = LoadBlobTelemetryModels(telemetryStream.Data, telemetryFields);
@@ -86,7 +77,7 @@ namespace PnIotPoc.WebApi.Infrastructure.Repository
                     break;
                 }
 
-                int preFilterCount = blobModels.Count();
+                var preFilterCount = blobModels.Count();
 
                 blobModels =
                     blobModels.Where(

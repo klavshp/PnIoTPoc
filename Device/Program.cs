@@ -76,20 +76,8 @@ namespace PnIotPoc.Device
             var configProvider = new ConfigurationProvider();
             var tableStorageClientFactory = new AzureTableStorageClientFactory();
 
-            ITelemetryFactory telemetryFactory;
-            IDeviceFactory deviceFactory;
-            var useRfid = true;
-
-            if (useRfid)
-            {
-                telemetryFactory = new RfidReaderTelemetryFactory(logger);
-                deviceFactory = new RfidReaderDeviceFactory();
-            }
-            else
-            {
-                telemetryFactory = new CoolerTelemetryFactory(logger);
-                deviceFactory = new CoolerDeviceFactory();
-            }
+            var telemetryFactory = new CoolerTelemetryFactory(logger);
+            var deviceFactory = new CoolerDeviceFactory();
 
             var transportFactory = new IotHubTransportFactory(logger, configProvider);
 

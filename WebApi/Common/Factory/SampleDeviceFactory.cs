@@ -45,7 +45,7 @@ namespace PnIotPoc.WebApi.Common.Factory
             new Location(55.735744, 12.382654000000002)             // Borupgaard gymnasium
         };
 
-        public static DeviceModel GetSampleSimulatedDevice(string deviceId, string key, string deviceType = null)
+        public static DeviceModel GetSampleSimulatedDevice(string deviceId, string key)
         {
             var device = DeviceCreatorHelper.BuildDeviceStructure(deviceId, true, null);
 
@@ -54,13 +54,13 @@ namespace PnIotPoc.WebApi.Common.Factory
             device.Version = Version10;
             device.IsSimulatedDevice = IsSimulatedDevice;
 
-            AssignTelemetry(device, deviceType);
+            AssignTelemetry(device);
             AssignCommands(device);
 
             return device;
         }
 
-        public static DeviceModel GetSampleDevice(Random randomNumber, SecurityKeys keys, string deviceModel = null)
+        public static DeviceModel GetSampleDevice(Random randomNumber, SecurityKeys keys)
         {
             var deviceId = string.Format(
                     CultureInfo.InvariantCulture,
@@ -74,7 +74,7 @@ namespace PnIotPoc.WebApi.Common.Factory
             device.ObjectName = "IoT Device Description";
 
             AssignDeviceProperties(device);
-            AssignTelemetry(device, deviceModel);
+            AssignTelemetry(device);
             AssignCommands(device);
 
             return device;
@@ -102,17 +102,9 @@ namespace PnIotPoc.WebApi.Common.Factory
             device.DeviceProperties.Longitude = PossibleDeviceLocations[randomId].Longitude;
         }
 
-        private static void AssignTelemetry(DeviceModel device, string deviceType = null)
+        private static void AssignTelemetry(DeviceModel device)
         {
-            if (deviceType == "rfid")
-            {
-                device.Telemetry.Add(new Telemetry("RfidTag", "RfidTag", "string"));
-            }
-            else
-            {
-                device.Telemetry.Add(new Telemetry("Temperature", "Temperature", "double"));
-                device.Telemetry.Add(new Telemetry("Humidity", "Humidity", "double"));
-            }
+            device.Telemetry.Add(new Telemetry("RfidTag", "RfidTag", "double"));
         }
 
         private static void AssignCommands(DeviceModel device)

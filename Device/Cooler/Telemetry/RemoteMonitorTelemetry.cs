@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using PnIotPoc.Device.Cooler.Telemetry.Data;
@@ -13,8 +14,8 @@ namespace PnIotPoc.Device.Cooler.Telemetry
         private readonly ILogger _logger;
         private readonly string _deviceId;
 
-        private const int REPORT_FREQUENCY_IN_SECONDS = 5;
-        private const int PEAK_FREQUENCY_IN_SECONDS = 90;
+        private const int ReportFrequencyInSeconds = 5;
+        private const int PeakFrequencyInSeconds = 90;
 
         private readonly SampleDataGenerator _temperatureGenerator;
         private readonly SampleDataGenerator _humidityGenerator;
@@ -32,7 +33,7 @@ namespace PnIotPoc.Device.Cooler.Telemetry
             ActivateExternalTemperature = false;
             TelemetryActive = true;
 
-            int peakFrequencyInTicks = Convert.ToInt32(Math.Ceiling((double)PEAK_FREQUENCY_IN_SECONDS / REPORT_FREQUENCY_IN_SECONDS));
+            int peakFrequencyInTicks = Convert.ToInt32(Math.Ceiling((double)PeakFrequencyInSeconds / ReportFrequencyInSeconds));
 
             _temperatureGenerator = new SampleDataGenerator(33, 36, 42, peakFrequencyInTicks);
             _humidityGenerator = new SampleDataGenerator(20, 50);
@@ -47,26 +48,11 @@ namespace PnIotPoc.Device.Cooler.Telemetry
                 if (TelemetryActive)
                 {
                     monitorData.DeviceId = _deviceId;
-                    monitorData.Temperature = _temperatureGenerator.GetNextValue();
-                    monitorData.Humidity = _humidityGenerator.GetNextValue();
-                    var messageBody = "Temperature: " + Math.Round(monitorData.Temperature, 2)
-                                         + " Humidity: " + Math.Round(monitorData.Humidity, 2);
-
-                    if (ActivateExternalTemperature)
-                    {
-                        monitorData.ExternalTemperature = _externalTemperatureGenerator.GetNextValue();
-                        messageBody += " External Temperature: " + Math.Round((double)monitorData.ExternalTemperature, 2);
-                    }
-                    else
-                    {
-                        monitorData.ExternalTemperature = null;
-                    }
-
-                    // _logger.LogInfo("Sending " + messageBody + " for Device: " + _deviceId);
+                    monitorData.RfidTag = _externalTemperatureGenerator.GetNextValue();
 
                     await sendMessageAsync(monitorData);
                 }
-                await Task.Delay(TimeSpan.FromSeconds(REPORT_FREQUENCY_IN_SECONDS), token);
+                await Task.Delay(TimeSpan.FromSeconds(ReportFrequencyInSeconds), token);
             }
         }
 
