@@ -145,7 +145,8 @@ namespace PnIotPoc.WebApi.Infrastructure.Repository
                             "EventEnqueuedUtcTime",
                             "EventProcessedUtcTime",
                             "IoTHub",
-                            "PartitionId"
+                            "PartitionId",
+                            "partitionid"
                         };
 
                         fields = strdict.Keys
