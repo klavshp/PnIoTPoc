@@ -75,8 +75,8 @@ namespace PnIotPoc.WebApi.Controllers
 
         [HttpGet]
         [Route("list")]
-//        [WebApiRequirePermission(Permission.ViewTelemetry)]
-//        public async Task<HttpResponseMessage> GetDeviceTelemetryAsync(string deviceId, DateTime minTime)
+//      [WebApiRequirePermission(Permission.ViewTelemetry)]
+//      public async Task<HttpResponseMessage> GetDeviceTelemetryAsync(string deviceId, DateTime minTime)
         public async Task<HttpResponseMessage> GetDeviceTelemetryAsync()
         {
             // TESTING
