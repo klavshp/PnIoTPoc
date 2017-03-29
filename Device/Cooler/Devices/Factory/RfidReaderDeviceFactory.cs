@@ -13,7 +13,7 @@ namespace PnIotPoc.Device.Cooler.Devices.Factory
         public IDevice CreateDevice(ILogger logger, ITransportFactory transportFactory, ITelemetryFactory telemetryFactory, IConfigurationProvider configurationProvider, InitialDeviceConfig config)
         {
             var device = new RfidReaderDevice(logger, transportFactory, telemetryFactory, configurationProvider);
-            device.Init(config);
+            device.Init(config, "rfid");
             return device;
         }
     }

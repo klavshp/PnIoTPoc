@@ -10,6 +10,7 @@ using PnIotPoc.Device.DataInitialization;
 using PnIotPoc.Device.SimulatorCore.Devices.Factory;
 using PnIotPoc.Device.SimulatorCore.Logging;
 using PnIotPoc.Device.SimulatorCore.Repository;
+using PnIotPoc.Device.SimulatorCore.Telemetry.Factory;
 using PnIotPoc.Device.SimulatorCore.Transport.Factory;
 using PnIotPoc.WebApi.Common.Configurations;
 using PnIotPoc.WebApi.Common.Helpers;
@@ -75,11 +76,20 @@ namespace PnIotPoc.Device
             var configProvider = new ConfigurationProvider();
             var tableStorageClientFactory = new AzureTableStorageClientFactory();
 
-            var telemetryFactory = new CoolerTelemetryFactory(logger);
-            // var telemetryFactory = new RfidReaderTelemetryFactory(logger);
+            ITelemetryFactory telemetryFactory;
+            IDeviceFactory deviceFactory;
+            var useRfid = true;
 
-            IDeviceFactory deviceFactory = new CoolerDeviceFactory();
-            // IDeviceFactory deviceFactory = new RfidReaderDeviceFactory();
+            if (useRfid)
+            {
+                telemetryFactory = new RfidReaderTelemetryFactory(logger);
+                deviceFactory = new RfidReaderDeviceFactory();
+            }
+            else
+            {
+                telemetryFactory = new CoolerTelemetryFactory(logger);
+                deviceFactory = new CoolerDeviceFactory();
+            }
 
             var transportFactory = new IotHubTransportFactory(logger, configProvider);
 

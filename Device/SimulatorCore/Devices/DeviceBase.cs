@@ -14,6 +14,7 @@ using PnIotPoc.WebApi.Common.Factory;
 using PnIotPoc.WebApi.Common.Helpers;
 using PnIotPoc.WebApi.Common.Models;
 using PnIotPoc.WebApi.Common.Models.Commands;
+using PnIotPoc.WebApi.Infrastructure.Models;
 
 namespace PnIotPoc.Device.SimulatorCore.Devices
 {
@@ -74,7 +75,12 @@ namespace PnIotPoc.Device.SimulatorCore.Devices
 
         public void Init(InitialDeviceConfig config)
         {
-            InitDeviceInfo(config);
+            Init(config, "");
+        }
+
+        public void Init(InitialDeviceConfig config, string deviceType)
+        {
+            InitDeviceInfo(config, deviceType);
 
             Transport = TransportFactory.CreateTransport(this);
             _telemetryController = TelemetryFactory.PopulateDeviceWithTelemetryEvents(this);
@@ -82,9 +88,9 @@ namespace PnIotPoc.Device.SimulatorCore.Devices
             InitCommandProcessors();
         }
 
-        protected virtual void InitDeviceInfo(InitialDeviceConfig config)
+        protected virtual void InitDeviceInfo(InitialDeviceConfig config, string deviceType = null)
         {
-            DeviceModel initialDevice = SampleDeviceFactory.GetSampleSimulatedDevice(config.DeviceId, config.Key);
+            var initialDevice = SampleDeviceFactory.GetSampleSimulatedDevice(config.DeviceId, config.Key, deviceType);
             DeviceProperties = initialDevice.DeviceProperties;
             Commands = initialDevice.Commands ?? new List<Command>();
             Telemetry = initialDevice.Telemetry ?? new List<WebApi.Common.Models.Telemetry>();

@@ -62,7 +62,7 @@ namespace PnIotPoc.Device.Cooler.Telemetry
                         monitorData.ExternalTemperature = null;
                     }
 
-                    _logger.LogInfo("Sending " + messageBody + " for Device: " + _deviceId);
+                    // _logger.LogInfo("Sending " + messageBody + " for Device: " + _deviceId);
 
                     await sendMessageAsync(monitorData);
                 }

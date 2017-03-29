@@ -25,6 +25,8 @@ namespace PnIotPoc.Device.Cooler.Telemetry
             _logger = logger;
             _deviceId = deviceId;
 
+            TelemetryActive = true;
+
             _rfidTagGenerator = new SampleDataGenerator(20, 50);
         }
 
@@ -41,7 +43,7 @@ namespace PnIotPoc.Device.Cooler.Telemetry
 
                     var messageBody = "DeviceId: " + monitorData.DeviceId + " DateTime: " + monitorData.DateTime + " RfidTag:" + monitorData.RfidTag;
 
-                    _logger.LogInfo("Sending " + messageBody + " for Device: " + _deviceId);
+                    // _logger.LogInfo("Sending " + messageBody + " for Device: " + _deviceId);
 
                     await sendMessageAsync(monitorData);
                 }
