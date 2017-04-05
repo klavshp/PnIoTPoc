@@ -80,7 +80,7 @@ namespace PnIotPoc.WebApi.Controllers
         public async Task<HttpResponseMessage> GetDeviceTelemetryAsync()
         {
             // TESTING
-            var deviceId = "SampleDevice001_972";
+            var deviceId = "SampleDevice001_375";
             var minTime = DateTime.Now.AddHours(-1);
 
             Func<Task<DeviceTelemetryModel[]>> getTelemetry =
