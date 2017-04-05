@@ -7,10 +7,8 @@ using Autofac;
 using PnIotPoc.Device.Cooler.Devices.Factory;
 using PnIotPoc.Device.Cooler.Telemetry.Factory;
 using PnIotPoc.Device.DataInitialization;
-using PnIotPoc.Device.SimulatorCore.Devices.Factory;
 using PnIotPoc.Device.SimulatorCore.Logging;
 using PnIotPoc.Device.SimulatorCore.Repository;
-using PnIotPoc.Device.SimulatorCore.Telemetry.Factory;
 using PnIotPoc.Device.SimulatorCore.Transport.Factory;
 using PnIotPoc.WebApi.Common.Configurations;
 using PnIotPoc.WebApi.Common.Helpers;
@@ -23,6 +21,7 @@ namespace PnIotPoc.Device
         static readonly CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
         static IContainer _simulatorContainer;
         private static Timer _timer;
+
         static void Main(string[] args)
         {
             Console.WriteLine("Starting device simulation...");
@@ -39,14 +38,14 @@ namespace PnIotPoc.Device
             Console.ReadLine();
         }
 
-        static void BuildContainer()
+        private static void BuildContainer()
         {
             var builder = new ContainerBuilder();
             builder.RegisterModule(new SimulatorModule());
             _simulatorContainer = builder.Build();
         }
 
-        static void CreateInitialDataAsNeeded(object state)
+        private static void CreateInitialDataAsNeeded(object state)
         {
             if (!CancellationTokenSource.Token.IsCancellationRequested)
             {
@@ -56,7 +55,7 @@ namespace PnIotPoc.Device
             }
         }
 
-        static void StartDataInitializationAsNeeded()
+        private static void StartDataInitializationAsNeeded()
         {
             //We have observed that Azure reliably starts the web job twice on a fresh deploy. The second start
             //is reliably about 7 seconds after the first start (under current conditions -- this is admittedly
@@ -69,7 +68,7 @@ namespace PnIotPoc.Device
             _timer = new Timer(CreateInitialDataAsNeeded, null, 10000, Timeout.Infinite);
         }
 
-        static void StartSimulator()
+        private static void StartSimulator()
         {
             // Dependencies to inject into the Bulk Device Tester
             var logger = new TraceLogger();
@@ -78,10 +77,9 @@ namespace PnIotPoc.Device
 
             var telemetryFactory = new CoolerTelemetryFactory(logger);
             var deviceFactory = new CoolerDeviceFactory();
-
             var transportFactory = new IotHubTransportFactory(logger, configProvider);
 
-            IVirtualDeviceStorage deviceStorage = null;
+            IVirtualDeviceStorage deviceStorage;
             var useConfigforDeviceList = Convert.ToBoolean(configProvider.GetConfigurationSettingValueOrDefault("UseConfigForDeviceList", "False"), CultureInfo.InvariantCulture);
 
             if (useConfigforDeviceList)
@@ -99,7 +97,7 @@ namespace PnIotPoc.Device
             Task.Run(() => tester.ProcessDevicesAsync(CancellationTokenSource.Token), CancellationTokenSource.Token);
         }
 
-        static async Task RunAsync()
+        private static async Task RunAsync()
         {
             while (CancellationTokenSource.Token.IsCancellationRequested)
             {

@@ -11,7 +11,9 @@ using PnIotPoc.WebApi.Models;
 
 namespace PnIotPoc.WebApi.Controllers
 {
-    public class WebApiControllerBase : ApiController
+    //[Authorize]
+    //[WebApiCSRFValidation]
+    public abstract class WebApiControllerBase : ApiController
     {
         protected async Task<HttpResponseMessage> GetServiceResponseAsync(Func<Task> getData)
         {
@@ -52,8 +54,7 @@ namespace PnIotPoc.WebApi.Controllers
         /// <param name="getData">Lambda to actually take the action of retrieving the data from the business logic layer</param>
         /// <param name="useServiceResponse">Returns a service response wrapping the data in a Data property in the response, this is ignored if there is an error</param>
         /// <returns></returns>
-        protected async Task<HttpResponseMessage> GetServiceResponseAsync<T>(Func<Task<T>> getData,
-            bool useServiceResponse)
+        protected async Task<HttpResponseMessage> GetServiceResponseAsync<T>(Func<Task<T>> getData, bool useServiceResponse)
         {
             var response = new ServiceResponse<T>();
 
@@ -98,13 +99,102 @@ namespace PnIotPoc.WebApi.Controllers
             if (response.Error.Count > 0 || useServiceResponse)
             {
                 return Request.CreateResponse(
-                    response.Error != null && response.Error.Any() ? HttpStatusCode.BadRequest : HttpStatusCode.OK,
-                    response);
+                        response.Error != null && response.Error.Any() ? HttpStatusCode.BadRequest : HttpStatusCode.OK,
+                        response);
             }
 
             // otherwise there's no error and we need to return the data at the root of the response
             return Request.CreateResponse(HttpStatusCode.OK, response.Data);
+        }
 
+        protected HttpResponseMessage GetNullRequestErrorResponse<T>()
+        {
+            ServiceResponse<T> response = new ServiceResponse<T>();
+            response.Error.Add(new Error("JSON request data was null or unable to be parsed.  Please ensure the data is sent in the body of the request and correctly formatted."));
+
+            return Request.CreateResponse(HttpStatusCode.BadRequest, response);
+        }
+
+        protected HttpResponseMessage GetFormatErrorResponse<T>(string parameterName, string type)
+        {
+            ServiceResponse<T> response = new ServiceResponse<T>();
+
+            string errorMessage =
+                String.Format(
+                    CultureInfo.CurrentCulture,
+                    "Either the {0} parameter is missing or the value was not recognized as a valid {1}",
+                    parameterName, type);
+
+            response.Error.Add(new Error(errorMessage));
+
+            return Request.CreateResponse(HttpStatusCode.BadRequest, response);
+        }
+
+        protected void TerminateProcessingWithMessage(HttpStatusCode statusCode, string message)
+        {
+            HttpResponseMessage responseMessage = new HttpResponseMessage()
+            {
+                StatusCode = statusCode,
+                ReasonPhrase = message
+            };
+
+            throw new HttpResponseException(responseMessage);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Microsoft.Azure.Devices.Applications.RemoteMonitoring.DeviceAdmin.Web.WebApiControllers.WebApiControllerBase.TerminateProcessingWithMessage(System.Net.HttpStatusCode,System.String)")]
+        protected void ValidateArgumentNotNullOrWhitespace(string argumentName, string value)
+        {
+            Debug.Assert(
+                !string.IsNullOrWhiteSpace(argumentName),
+                "argumentName is a null reference, empty string, or contains only whitespace.");
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                // Error strings are not localized.
+                string errorText =
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        "{0} is null, empty, or just whitespace.",
+                        argumentName);
+
+                TerminateProcessingWithMessage(HttpStatusCode.BadRequest, errorText);
+            }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Microsoft.Azure.Devices.Applications.RemoteMonitoring.DeviceAdmin.Web.WebApiControllers.WebApiControllerBase.TerminateProcessingWithMessage(System.Net.HttpStatusCode,System.String)")]
+        protected void ValidateArgumentNotNull(string argumentName, object value)
+        {
+            Debug.Assert(
+                !string.IsNullOrWhiteSpace(argumentName),
+                "argumentName is a null reference, empty string, or contains only whitespace.");
+
+            if (value == null)
+            {
+                // Error strings are not localized.
+                string errorText = string.Format(CultureInfo.InvariantCulture, "{0} is a null reference.", argumentName);
+
+                TerminateProcessingWithMessage(HttpStatusCode.BadRequest, errorText);
+            }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Microsoft.Azure.Devices.Applications.RemoteMonitoring.DeviceAdmin.Web.WebApiControllers.WebApiControllerBase.TerminateProcessingWithMessage(System.Net.HttpStatusCode,System.String)")]
+        protected void ValidatePositiveValue(string argumentName, int value)
+        {
+            Debug.Assert(
+                !string.IsNullOrWhiteSpace(argumentName),
+                "argumentName is a null reference, empty string, or contains only whitespace.");
+
+            if (value <= 0)
+            {
+                // Error strings are not localized.
+                string errorText =
+                    string.Format(
+                        CultureInfo.InvariantCulture,
+                        "{0} is not a positive integer.",
+                        argumentName);
+
+                TerminateProcessingWithMessage(HttpStatusCode.BadRequest, errorText);
+            }
         }
 
         private static string FormatExceptionMessage(Exception ex)

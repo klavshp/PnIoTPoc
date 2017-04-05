@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using PnIotPoc.WebApi.Common.Exceptions;
 using PnIotPoc.WebApi.Common.Helpers;
 using PnIotPoc.WebApi.Common.Models;
@@ -19,7 +18,6 @@ namespace PnIotPoc.WebApi.Infrastructure.Repository
         {
             _documentClient = documentClient;
         }
-
 
         /// <summary>
         /// Queries the DocumentDB and retrieves the device based on its deviceId
@@ -56,7 +54,7 @@ namespace PnIotPoc.WebApi.Infrastructure.Repository
                 device.id = Guid.NewGuid().ToString();
             }
 
-            DeviceModel existingDevice = await GetDeviceAsync(device.DeviceProperties.DeviceID);
+            var existingDevice = await GetDeviceAsync(device.DeviceProperties.DeviceID);
             if (existingDevice != null)
             {
                 throw new DeviceAlreadyRegisteredException(device.DeviceProperties.DeviceID);
@@ -143,7 +141,7 @@ namespace PnIotPoc.WebApi.Infrastructure.Repository
             }
 
             device.DeviceProperties.UpdatedTime = DateTime.UtcNow;
-            var savedDevice = await this._documentClient.SaveAsync(device);
+            var savedDevice = await _documentClient.SaveAsync(device);
             return savedDevice;
         }
 
@@ -151,10 +149,10 @@ namespace PnIotPoc.WebApi.Infrastructure.Repository
         {
             if (string.IsNullOrEmpty(deviceId))
             {
-                throw new ArgumentNullException("deviceId");
+                throw new ArgumentNullException(nameof(deviceId));
             }
 
-            DeviceModel existingDevice = await this.GetDeviceAsync(deviceId);
+            DeviceModel existingDevice = await GetDeviceAsync(deviceId);
 
             if (existingDevice == null)
             {
@@ -169,25 +167,25 @@ namespace PnIotPoc.WebApi.Infrastructure.Repository
 
             existingDevice.DeviceProperties.HubEnabledState = isEnabled;
             existingDevice.DeviceProperties.UpdatedTime = DateTime.UtcNow;
-            var savedDevice = await this._documentClient.SaveAsync(existingDevice);
+            var savedDevice = await _documentClient.SaveAsync(existingDevice);
             return savedDevice;
         }
 
         public async Task<DeviceListQueryResult> GetDeviceList(DeviceListQuery query)
         {
-            List<DeviceModel> deviceList = await this.GetAllDevicesAsync();
+            List<DeviceModel> deviceList = await GetAllDevicesAsync();
 
-            IQueryable<DeviceModel> filteredDevices = FilterHelper.FilterDeviceList(deviceList.AsQueryable<DeviceModel>(), query.Filters);
+            IQueryable<DeviceModel> filteredDevices = FilterHelper.FilterDeviceList(deviceList.AsQueryable(), query.Filters);
 
-            IQueryable<DeviceModel> filteredAndSearchedDevices = this.SearchDeviceList(filteredDevices, query.SearchQuery);
+            IQueryable<DeviceModel> filteredAndSearchedDevices = SearchDeviceList(filteredDevices, query.SearchQuery);
 
-            IQueryable<DeviceModel> sortedDevices = this.SortDeviceList(filteredAndSearchedDevices, query.SortColumn, query.SortOrder);
+            IQueryable<DeviceModel> sortedDevices = SortDeviceList(filteredAndSearchedDevices, query.SortColumn, query.SortOrder);
 
             List<DeviceModel> pagedDeviceList = sortedDevices.Skip(query.Skip).Take(query.Take).ToList();
 
             int filteredCount = filteredAndSearchedDevices.Count();
 
-            return new DeviceListQueryResult()
+            return new DeviceListQueryResult
             {
                 Results = pagedDeviceList,
                 TotalDeviceCount = deviceList.Count,
@@ -212,7 +210,7 @@ namespace PnIotPoc.WebApi.Infrastructure.Repository
                 return deviceList;
             }
 
-            Func<DeviceModel, bool> filter = (d) => this.SearchTypePropertiesForValue(d, search);
+            Func<DeviceModel, bool> filter = (d) => SearchTypePropertiesForValue(d, search);
 
             // look for all devices that contain the search value in one of the DeviceProperties Properties
             return deviceList.Where(filter).AsQueryable();

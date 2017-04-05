@@ -86,9 +86,9 @@ namespace PnIotPoc.WebApi.Controllers
             Func<Task<DeviceTelemetryModel[]>> getTelemetry =
                 async () =>
                 {
-                    DeviceModel device = await _deviceLogic.GetDeviceAsync(deviceId);
+                    var device = await _deviceLogic.GetDeviceAsync(deviceId);
 
-                    IList<DeviceTelemetryFieldModel> telemetryFields = null;
+                    IList<DeviceTelemetryFieldModel> telemetryFields;
 
                     try
                     {
@@ -96,7 +96,7 @@ namespace PnIotPoc.WebApi.Controllers
                     }
                     catch
                     {
-                        HttpResponseMessage message = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                        var message = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                         {
                             Content = new StringContent($"Device {deviceId} has an invalid Telemetry specification on its DeviceInfo")
                         };
@@ -108,7 +108,7 @@ namespace PnIotPoc.WebApi.Controllers
                     return telemetryModels.ToArray();
                 };
 
-            return await GetServiceResponseAsync<DeviceTelemetryModel[]>(getTelemetry, false);
+            return await GetServiceResponseAsync(getTelemetry, false);
         }
     }
 }

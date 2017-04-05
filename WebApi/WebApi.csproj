@@ -446,9 +446,15 @@
     <Compile Include="Common\SampleDataGenerator\IRandomGenerator.cs" />
     <Compile Include="Common\SampleDataGenerator\RandomGenerator.cs" />
     <Compile Include="Common\SampleDataGenerator\SampleDataGenerator.cs" />
+    <Compile Include="Controllers\DeviceApiController.cs" />
     <Compile Include="Controllers\TelemetryApiController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\WebApiControllerBase.cs" />
+    <Compile Include="DataTables\Column.cs" />
+    <Compile Include="DataTables\DataTablesRequest.cs" />
+    <Compile Include="DataTables\DataTablesResponse.cs" />
+    <Compile Include="DataTables\Search.cs" />
+    <Compile Include="DataTables\SortColumn.cs" />
     <Compile Include="Filters\ErrorHandlingFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
