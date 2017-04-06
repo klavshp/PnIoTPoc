@@ -8,6 +8,7 @@ using System.Web.Http;
 using PnIotPoc.WebApi.Common.Configurations;
 using PnIotPoc.WebApi.Common.Models;
 using PnIotPoc.WebApi.Infrastructure.BusinessLogic;
+using PnIotPoc.WebApi.Infrastructure.Models;
 using PnIotPoc.WebApi.Models;
 using PnIotPoc.WebApi.Security;
 
@@ -71,6 +72,74 @@ namespace PnIotPoc.WebApi.Controllers
             _alertsLogic = alertsLogic;
             _deviceLogic = deviceLogic;
             _configProvider = configProvider;
+        }
+
+        [HttpGet]
+        [Route("dashboardDevicePane")]
+      //[WebApiRequirePermission(Permission.ViewTelemetry)]
+      //public async Task<HttpResponseMessage> GetDashboardDevicePaneDataAsync(string deviceId)
+        public async Task<HttpResponseMessage> GetDashboardDevicePaneDataAsync()
+        {
+            // TESTING
+            var deviceId = "SampleDevice001_375";
+
+            ValidateArgumentNotNullOrWhitespace("deviceId", deviceId);
+
+            DashboardDevicePaneDataModel result = new DashboardDevicePaneDataModel()
+            {
+                DeviceId = deviceId
+            };
+
+            Func<Task<DashboardDevicePaneDataModel>> getTelemetry =
+                async () =>
+                {
+                    var device = await _deviceLogic.GetDeviceAsync(deviceId);
+
+                    IList<DeviceTelemetryFieldModel> telemetryFields;
+
+                    try
+                    {
+                        telemetryFields = _deviceLogic.ExtractTelemetry(device);
+                        result.DeviceTelemetryFields = telemetryFields?.ToArray();
+                    }
+                    catch
+                    {
+                        HttpResponseMessage message = new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError);
+                        message.Content = new StringContent($"Device {deviceId} has an invalid Telemetry specification on its DeviceInfo");
+                        throw new HttpResponseException(message);
+                    }
+
+                    // Get Telemetry Summary
+                    DeviceTelemetrySummaryModel summaryModel;
+
+                    result.DeviceTelemetrySummaryModel = summaryModel =
+                        await _deviceTelemetryLogic.LoadLatestDeviceTelemetrySummaryAsync(
+                            deviceId, DateTime.Now.AddMinutes(-MaxDeviceSummaryAgeMinutes));
+
+                    if (summaryModel == null)
+                    {
+                        result.DeviceTelemetrySummaryModel =
+                            new DeviceTelemetrySummaryModel();
+                    }
+
+                    // Get Telemetry History
+                    DateTime minTime = DateTime.Now.AddMinutes(-MaxDeviceSummaryAgeMinutes);
+                    var telemetryModels = await _deviceTelemetryLogic.LoadLatestDeviceTelemetryAsync(deviceId, telemetryFields, minTime);
+
+                    if (telemetryModels == null)
+                    {
+                        result.DeviceTelemetryModels = new DeviceTelemetryModel[0];
+                    }
+                    else
+                    {
+                        result.DeviceTelemetryModels =
+                            telemetryModels.OrderBy(t => t.Timestamp).ToArray();
+                    }
+
+                    return result;
+                };
+
+            return await GetServiceResponseAsync(getTelemetry, false);
         }
 
         [HttpGet]

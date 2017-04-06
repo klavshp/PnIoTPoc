@@ -525,6 +525,7 @@
     <Compile Include="Infrastructure\Repository\IotHubDeviceManager.cs" />
     <Compile Include="Infrastructure\Repository\IotHubRepository.cs" />
     <Compile Include="Models\BlobContents.cs" />
+    <Compile Include="Models\DashboardDevicePaneDataModel.cs" />
     <Compile Include="Models\DeviceRule.cs" />
     <Compile Include="Models\DeviceTelemetryFieldModel.cs" />
     <Compile Include="Models\DeviceTelemetryModel.cs" />

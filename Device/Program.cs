@@ -34,7 +34,6 @@ namespace PnIotPoc.Device
 
             RunAsync().Wait();
 
-
             Console.ReadLine();
         }
 

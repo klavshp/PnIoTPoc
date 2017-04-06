@@ -42,12 +42,14 @@ namespace PnIotPoc.WebApi.Common.Helpers
         /// <returns></returns>
         private static void InitializeDeviceProperties(DeviceModel device, string deviceId, bool isSimulated)
         {
-            DeviceProperties deviceProps = new DeviceProperties();
-            deviceProps.DeviceID = deviceId;
-            deviceProps.HubEnabledState = null;
-            deviceProps.CreatedTime = DateTime.UtcNow;
-            deviceProps.DeviceState = "normal";
-            deviceProps.UpdatedTime = null;
+            var deviceProps = new DeviceProperties
+            {
+                DeviceID = deviceId,
+                HubEnabledState = null,
+                CreatedTime = DateTime.UtcNow,
+                DeviceState = "normal",
+                UpdatedTime = null
+            };
 
             device.DeviceProperties = deviceProps;
         }
